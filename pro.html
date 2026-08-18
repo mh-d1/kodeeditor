@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="MH.DEV Code Playground."
+    >
+
+    <title>MH.DEV Code Playground</title>
+
+    <link rel="stylesheet" href="pro.css">
+
+</head>
+
+<body>
+
+<div class="pro-app">
+
+    <header class="pro-header">
+
+        <div class="pro-brand">
+
+            <a
+                href="index.html"
+                class="back-button"
+                aria-label="Kembali ke Easy Mode"
+            >
+                ←
+            </a>
+
+            <div class="brand-text">
+
+                <strong>MH.DEV</strong>
+
+                <span>
+                    code playground
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="pro-center">
+
+            <span class="pro-status-dot"></span>
+
+            <span>
+                Mode Pro
+            </span>
+
+        </div>
+
+
+        <div class="pro-actions">
+
+            <button
+                id="resetCode"
+                class="action-button secondary"
+                type="button"
+            >
+                Reset kode
+            </button>
+
+            <button
+                id="downloadPro"
+                class="action-button primary"
+                type="button"
+            >
+                ↓ Download HTML
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="pro-workspace">
+
+        <section class="editor-panel">
+
+            <header class="editor-header">
+
+                <div class="window-controls">
+
+                    <span class="traffic red"></span>
+                    <span class="traffic yellow"></span>
+                    <span class="traffic green"></span>
+
+                </div>
+
+
+                <span class="editor-label">
+                    editor
+                </span>
+
+            </header>
+
+
+            <nav class="code-tabs">
+
+                <button
+                    class="code-tab active"
+                    data-code="html"
+                    type="button"
+                >
+                    HTML
+                </button>
+
+                <button
+                    class="code-tab"
+                    data-code="css"
+                    type="button"
+                >
+                    CSS
+                </button>
+
+                <button
+                    class="code-tab"
+                    data-code="js"
+                    type="button"
+                >
+                    JavaScript
+                </button>
+
+            </nav>
+
+
+            <div class="editor-info">
+
+                <span id="editorHint">
+                    Struktur halaman website kamu.
+                </span>
+
+                <span>
+                    Tab untuk indent
+                </span>
+
+            </div>
+
+
+            <div class="code-editor-wrap">
+
+                <div
+                    class="line-numbers"
+                    id="lineNumbers"
+                >
+                    1
+                </div>
+
+
+                <div class="code-content">
+
+                    <pre
+                        class="highlight-layer"
+                        id="highlightLayer"
+                        aria-hidden="true"
+                    ></pre>
+
+
+                    <textarea
+                        id="codeEditor"
+                        class="code-editor"
+                        spellcheck="false"
+                        autocapitalize="off"
+                        autocomplete="off"
+                        autocorrect="off"
+                        aria-label="Code editor"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="preview-panel">
+
+            <header class="preview-header">
+
+                <div class="preview-name">
+
+                    <span class="status-dot"></span>
+
+                    <strong>
+                        Preview
+                    </strong>
+
+                </div>
+
+
+                <div class="device-switcher">
+
+                    <button
+                        class="device-button active"
+                        data-device="desktop"
+                        type="button"
+                    >
+                        <span>▣</span>
+                        <b>Desktop</b>
+                    </button>
+
+
+                    <button
+                        class="device-button"
+                        data-device="tablet"
+                        type="button"
+                    >
+                        <span>▯</span>
+                        <b>Tablet</b>
+                    </button>
+
+
+                    <button
+                        class="device-button"
+                        data-device="mobile"
+                        type="button"
+                    >
+                        <span>▯</span>
+                        <b>Mobile</b>
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <div
+                class="preview-stage"
+                id="previewStage"
+            >
+
+                <div
+                    class="device-frame desktop"
+                    id="deviceFrame"
+                >
+
+                    <div class="browser-bar">
+
+                        <span></span>
+
+                        <div class="browser-address">
+                            localhost / preview
+                        </div>
+
+                        <span></span>
+
+                    </div>
+
+
+                    <iframe
+                        id="proPreview"
+                        title="Website preview"
+                        sandbox="allow-scripts allow-forms"
+                    ></iframe>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="pro-footer">
+
+        <span>
+            HTML + CSS + JavaScript
+        </span>
+
+        <span>
+            Perubahan langsung terlihat di preview
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script src="pro.js"></script>
+
+</body>
+</html>
