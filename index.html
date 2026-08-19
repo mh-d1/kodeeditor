@@ -3,479 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta
-        name="description"
-        content="MH.DEV Web Builder. Bikin website dengan cara yang lebih mudah."
-    >
-
-    <title>MH.DEV Web Builder</title>
-
+    <meta name="description" content="MH.DEV – Belajar coding dengan cara yang menyenangkan.">
+    <title>MH.DEV</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .landing {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+            text-align: center;
+        }
+        .landing h1 {
+            font-size: clamp(60px, 10vw, 120px);
+            line-height: 1;
+            letter-spacing: -.07em;
+            margin-bottom: 20px;
+        }
+        .landing p {
+            max-width: 600px;
+            margin: 0 auto 48px;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .mode-card {
+            padding: 40px 28px;
+            background: var(--surface);
+            border: 1px solid rgba(0,0,0,.06);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0,0,0,.05);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+        }
+        .mode-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 80px rgba(0,0,0,.08);
+        }
+        .mode-card .icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 16px;
+        }
+        .mode-card h2 {
+            font-size: 28px;
+            letter-spacing: -.04em;
+            margin-bottom: 8px;
+        }
+        .mode-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .mode-card .badge {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 6px 14px;
+            background: var(--bg);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        .mode-card .badge.pro {
+            background: #1d1d1f;
+            color: #fff;
+        }
+        .footer-landing {
+            margin-top: 60px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+        @media (max-width: 600px) {
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<header class="topbar">
-
-    <a href="index.html" class="brand">
-        MH.DEV
-        <span>web builder</span>
-    </a>
-
-    <a href="pro.html" class="pro-entry">
-        <span>Sudah mahir?</span>
-        <strong>Masuk ke Mode Pro →</strong>
-    </a>
-
+<header class="topbar" style="background:rgba(245,245,247,.92);">
+    <a href="index.html" class="brand">MH.DEV</a>
+    <span style="color:var(--muted);font-size:13px;">Belajar coding jadi mudah</span>
 </header>
 
-
 <main>
-
-<section class="builder">
-
-    <div class="builder-intro">
-
-        <span class="eyebrow">
-            bikin website, pelan-pelan aja
-        </span>
-
-        <h1>
-            Website kamu,<br>
-            mulai dari sini.
-        </h1>
-
-        <p>
-            Kamu nggak perlu langsung ngerti coding.
-            Isi bagian-bagiannya, lihat hasilnya,
-            lalu bikin sesuai versimu.
-        </p>
-
-    </div>
-
-
-    <div class="easy-layout">
-
-        <aside class="easy-sidebar">
-
-            <div class="sidebar-title">
-                <span>01</span>
-                Bagian website
-            </div>
-
-            <button
-                class="easy-nav active"
-                data-section="hero"
-                type="button"
-            >
-                <span class="nav-icon">✦</span>
-
-                <span>
-                    <strong>Bagian atas</strong>
-                    <small>Yang pertama dilihat</small>
-                </span>
-            </button>
-
-
-            <button
-                class="easy-nav"
-                data-section="about"
-                type="button"
-            >
-                <span class="nav-icon">○</span>
-
-                <span>
-                    <strong>Tentang kamu</strong>
-                    <small>Ceritakan sedikit</small>
-                </span>
-            </button>
-
-
-            <button
-                class="easy-nav"
-                data-section="features"
-                type="button"
-            >
-                <span class="nav-icon">◇</span>
-
-                <span>
-                    <strong>Hal yang kamu punya</strong>
-                    <small>Isi sampai tiga hal</small>
-                </span>
-            </button>
-
-
-            <button
-                class="easy-nav"
-                data-section="contact"
-                type="button"
-            >
-                <span class="nav-icon">↗</span>
-
-                <span>
-                    <strong>Ajak ngobrol</strong>
-                    <small>Tambahkan tombol</small>
-                </span>
-            </button>
-
-
-            <button
-                class="easy-nav"
-                data-section="footer"
-                type="button"
-            >
-                <span class="nav-icon">—</span>
-
-                <span>
-                    <strong>Bagian bawah</strong>
-                    <small>Penutup website</small>
-                </span>
-            </button>
-
-        </aside>
-
-
-        <section class="easy-editor">
-
-            <div class="easy-card active" data-editor="hero">
-
-                <div class="card-heading">
-
-                    <span class="card-number">01</span>
-
-                    <h2>Bagian atas</h2>
-
-                    <p>
-                        Ini bagian pertama yang dilihat orang.
-                        Bikin singkat, jelas, dan punya karakter.
-                    </p>
-
-                </div>
-
-
-                <label>
-                    <span>Judul utama</span>
-
-                    <input
-                        id="heroTitle"
-                        type="text"
-                        value="Halo, aku sedang bikin website."
-                    >
-                </label>
-
-
-                <label>
-                    <span>Kalimat pendek</span>
-
-                    <textarea id="heroText" rows="4">Aku suka membuat sesuatu dari nol dan melihatnya tumbuh menjadi sesuatu yang bisa dipakai.</textarea>
-                </label>
-
-
-                <div class="field-grid">
-
-                    <label>
-                        <span>Nama tombol</span>
-
-                        <input
-                            id="heroButton"
-                            type="text"
-                            value="Kenalan yuk"
-                        >
-                    </label>
-
-
-                    <label>
-                        <span>Tombol ini menuju</span>
-
-                        <select id="heroLinkType">
-                            <option value="about">Bagian tentang aku</option>
-                            <option value="features">Bagian yang aku punya</option>
-                            <option value="contact">Bagian kontak</option>
-                            <option value="custom">Aku mau isi sendiri</option>
-                        </select>
-
-                        <input
-                            id="heroLinkCustom"
-                            class="link-custom"
-                            type="text"
-                            placeholder="Contoh: https://contoh.com"
-                        >
-                    </label>
-
-                </div>
-
-
-                <div class="tip">
-                    💡 <strong>Gampangnya:</strong>
-                    pilih bagian yang ingin dituju tombol.
-                    Kamu nggak perlu hafal kode link.
-                </div>
-
-            </div>
-
-
-            <div class="easy-card" data-editor="about">
-
-                <div class="card-heading">
-
-                    <span class="card-number">02</span>
-
-                    <h2>Tentang kamu</h2>
-
-                    <p>
-                        Nggak perlu bikin biodata panjang.
-                        Ceritakan siapa kamu dengan bahasa kamu sendiri.
-                    </p>
-
-                </div>
-
-
-                <label>
-                    <span>Judul bagian</span>
-
-                    <input
-                        id="aboutTitle"
-                        type="text"
-                        value="Sedikit tentang aku"
-                    >
-                </label>
-
-
-                <label>
-                    <span>Ceritakan tentang kamu</span>
-
-                    <textarea id="aboutText" rows="7">Aku sedang belajar membuat website. Aku suka mencoba hal baru, mengutak-atik tampilan, dan melihat apa yang bisa aku buat berikutnya.</textarea>
-                </label>
-
-            </div>
-
-
-            <div class="easy-card" data-editor="features">
-
-                <div class="card-heading">
-
-                    <span class="card-number">03</span>
-
-                    <h2>Hal yang kamu punya</h2>
-
-                    <p>
-                        Bisa kemampuan, layanan, hobi,
-                        project, atau apa saja yang ingin kamu tunjukkan.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-editor">
-
-                    <label>
-                        <span>Hal pertama</span>
-
-                        <input
-                            id="feature1Title"
-                            type="text"
-                            value="Web"
-                        >
-
-                        <textarea id="feature1Text" rows="3">Aku suka membuat website yang simpel dan nyaman digunakan.</textarea>
-                    </label>
-
-
-                    <label>
-                        <span>Hal kedua</span>
-
-                        <input
-                            id="feature2Title"
-                            type="text"
-                            value="Visual"
-                        >
-
-                        <textarea id="feature2Text" rows="3">Aku juga suka bermain dengan layout, tulisan, dan tampilan.</textarea>
-                    </label>
-
-
-                    <label>
-                        <span>Hal ketiga</span>
-
-                        <input
-                            id="feature3Title"
-                            type="text"
-                            value="Eksperimen"
-                        >
-
-                        <textarea id="feature3Text" rows="3">Kadang idenya random. Tapi justru dari situ biasanya muncul sesuatu.</textarea>
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <div class="easy-card" data-editor="contact">
-
-                <div class="card-heading">
-
-                    <span class="card-number">04</span>
-
-                    <h2>Ajak ngobrol</h2>
-
-                    <p>
-                        Kasih orang alasan untuk menghubungi kamu.
-                    </p>
-
-                </div>
-
-
-                <label>
-                    <span>Judul</span>
-
-                    <input
-                        id="contactTitle"
-                        type="text"
-                        value="Punya sesuatu untuk dibicarakan?"
-                    >
-                </label>
-
-
-                <label>
-                    <span>Kalimat pendek</span>
-
-                    <textarea id="contactText" rows="4">Mau ngobrol soal project, kerja sama, atau sekadar say hi?</textarea>
-                </label>
-
-
-                <div class="field-grid">
-
-                    <label>
-                        <span>Nama tombol</span>
-
-                        <input
-                            id="contactButton"
-                            type="text"
-                            value="Hubungi aku"
-                        >
-                    </label>
-
-
-                    <label>
-                        <span>Tombol ini menuju</span>
-
-                        <select id="contactLinkType">
-                            <option value="email">Email</option>
-                            <option value="custom">Aku mau isi sendiri</option>
-                        </select>
-
-                        <input
-                            id="contactEmail"
-                            type="email"
-                            value="halo@example.com"
-                        >
-
-                        <input
-                            id="contactLinkCustom"
-                            class="link-custom"
-                            type="text"
-                            placeholder="https://contoh.com"
-                        >
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <div class="easy-card" data-editor="footer">
-
-                <div class="card-heading">
-
-                    <span class="card-number">05</span>
-
-                    <h2>Bagian bawah</h2>
-
-                    <p>
-                        Penutup kecil untuk website kamu.
-                    </p>
-
-                </div>
-
-
-                <label>
-                    <span>Nama atau tulisan</span>
-
-                    <input
-                        id="footerText"
-                        type="text"
-                        value="Website aku"
-                    >
-                </label>
-
-
-                <div class="tip">
-                    ✨ Kamu sudah sampai bawah.
-                    Website kamu sudah punya struktur dasar.
-                </div>
-
-            </div>
-
-
-            <div class="easy-actions">
-
-                <button
-                    class="download-button"
-                    id="downloadEasy"
-                    type="button"
-                >
-                    ↓ Download website
-                </button>
-
-                <span>
-                    Kamu akan mendapatkan satu file HTML
-                    yang bisa langsung dibuka di browser.
-                </span>
-
-            </div>
-
-        </section>
-
-
-        <section class="preview-panel">
-
-            <div class="preview-header">
-
-                <div>
-                    <span>Preview</span>
-                    <strong>Website kamu</strong>
-                </div>
-
-                <span class="live-dot">
-                    live
-                </span>
-
-            </div>
-
-
-            <div class="easy-preview-window">
-
-                <iframe
-                    id="easyPreview"
-                    title="Preview website"
-                    sandbox="allow-scripts allow-forms"
-                ></iframe>
-
-            </div>
-
-        </section>
-
-    </div>
-
-</section>
-
+    <section class="landing">
+        <h1>MH.DEV</h1>
+        <p>Buat website pertamamu tanpa perlu pusing. Pilih mode yang sesuai dengan levelmu.</p>
+
+        <div class="mode-grid">
+            <a href="easy.html" class="mode-card">
+                <span class="icon">🌱</span>
+                <h2>Easy Mode</h2>
+                <p>Untuk pemula yang baru belajar. Isi form, lihat hasilnya langsung.</p>
+                <span class="badge">✅ Tanpa coding</span>
+            </a>
+            <a href="pro.html" class="mode-card">
+                <span class="icon">⚡</span>
+                <h2>Pro Mode</h2>
+                <p>Untuk yang sudah siap dengan kode. Editor HTML + CSS + JS dengan preview.</p>
+                <span class="badge pro">⌨️ Coding langsung</span>
+            </a>
+        </div>
+
+        <div class="footer-landing">
+            ✨ Pilih mode yang cocok untukmu. Selamat belajar!
+        </div>
+    </section>
 </main>
-
-
-<script src="script.js"></script>
 
 </body>
 </html>
