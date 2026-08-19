@@ -1,781 +1,346 @@
-const codeEditor = document.getElementById("codeEditor");
-const highlightLayer = document.getElementById("highlightLayer");
-const lineNumbers = document.getElementById("lineNumbers");
-
-const proPreview = document.getElementById("proPreview");
-const deviceFrame = document.getElementById("deviceFrame");
-
-const codeTabs = document.querySelectorAll(".code-tab");
-const deviceButtons = document.querySelectorAll(".device-button");
-
-const editorHint = document.getElementById("editorHint");
-
-const defaultCode = {
-  html: `<!--
-Isi struktur website kamu di sini.
-Kamu tidak perlu menulis <html>,
-<head>, atau <body>.
-MH.DEV akan mengurus bagian itu.
-
-Contoh:
--->
-
-<header class="hero">
-
-    <p class="eyebrow">
-        website aku
-    </p>
-
-    <h1>
-        Halo 👋
-    </h1>
-
-    <p>
-        Ini website yang sedang aku buat.
-    </p>
-
-    <a
-        href="#tentang"
-        class="button"
-    >
-        Kenalan yuk
-    </a>
-
-</header>
-
-
-<main>
-
-    <section id="tentang">
-
-        <h2>
-            Sedikit tentang aku
-        </h2>
-
-        <p>
-            Aku sedang belajar membuat website
-            dan mencoba hal-hal baru.
-        </p>
-
-    </section>
-
-
-    <section>
-
-        <h2>
-            Yang aku suka
-        </h2>
-
-        <div class="cards">
-
-            <article>
-                <h3>
-                    Web
-                </h3>
-
-                <p>
-                    Membuat website dari nol.
-                </p>
-            </article>
-
-
-            <article>
-                <h3>
-                    Visual
-                </h3>
-
-                <p>
-                    Bermain dengan tampilan.
-                </p>
-            </article>
-
-
-            <article>
-                <h3>
-                    Eksperimen
-                </h3>
-
-                <p>
-                    Mencoba ide random.
-                </p>
-            </article>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<footer>
-
-    © 2026 Website Aku
-
-</footer>`,
-
-  css: `* {
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    background: #f5f5f7;
-    color: #1d1d1f;
-}
-
-.hero {
-    min-height: 85vh;
-
-    padding: 80px 24px;
-
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-}
-
-.eyebrow {
-    color: #777;
-
-    font-size: 13px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .12em;
-}
-
-h1 {
-    margin: 20px 0 0;
-
-    font-size:
-        clamp(50px, 9vw, 110px);
-
-    line-height: .9;
-
-    letter-spacing: -.07em;
-}
-
-.hero > p {
-    max-width: 550px;
-
-    color: #666;
-
-    font-size: 18px;
-
-    line-height: 1.6;
-}
-
-.button {
-    margin-top: 20px;
-
-    padding: 13px 20px;
-
-    display: inline-block;
-
-    background: #1d1d1f;
-
-    color: #fff;
-
-    border-radius: 999px;
-
-    text-decoration: none;
-}
-
-section {
-    max-width: 1000px;
-
-    margin: auto;
-
-    padding: 100px 24px;
-}
-
-section h2 {
-    font-size: 48px;
-
-    letter-spacing: -.05em;
-}
-
-section p {
-    max-width: 650px;
-
-    color: #666;
-
-    line-height: 1.7;
-}
-
-.cards {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 16px;
-}
-
-.cards article {
-    padding: 28px;
-
-    background: #fff;
-
-    border-radius: 20px;
-}
-
-.cards article p {
-    color: #666;
-}
-
-footer {
-    padding: 50px 24px;
-
-    color: #777;
-
-    text-align: center;
-}
-
-@media (max-width: 700px) {
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
-
-    section h2 {
-        font-size: 40px;
-    }
-
-}`,
-
-  js: `const button =
-    document.querySelector(".button");
-
-button?.addEventListener(
-    "click",
-    () => {
-
-        console.log(
-            "Tombol diklik!"
-        );
-
-    }
-);`,
-};
-
-const codeState = {
-  html: defaultCode.html,
-  css: defaultCode.css,
-  js: defaultCode.js,
-};
-
-let currentCode = "html";
-
-const hints = {
-  html: "Struktur halaman website kamu.",
-  css: "Tampilan, warna, ukuran, dan layout website.",
-  js: "Interaksi dan perilaku website kamu.",
-};
-
-/* ESCAPE */
-
-function escapeHTML(text) {
-  return String(text)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-/* SYNTAX HIGHLIGHT */
-
-function highlightHTML(code) {
-  let output = escapeHTML(code);
-
-  output = output.replace(
-    /(&lt;!--[\s\S]*?--&gt;)/g,
-    '<span class="token-comment">$1</span>',
-  );
-
-  output = output.replace(
-    /(&lt;\/?)([a-zA-Z0-9-]+)/g,
-    '$1<span class="token-tag">$2</span>',
-  );
-
-  output = output.replace(
-    /(\s)([a-zA-Z_:][-a-zA-Z0-9_:.]*)(=)/g,
-    '$1<span class="token-attr">$2</span>$3',
-  );
-
-  output = output.replace(
-    /(&quot;.*?&quot;|&#039;.*?&#039;)/g,
-    '<span class="token-string">$1</span>',
-  );
-
-  return output;
-}
-
-function highlightCSS(code) {
-  let output = escapeHTML(code);
-
-  output = output.replace(
-    /(\/\*[\s\S]*?\*\/)/g,
-    '<span class="token-comment">$1</span>',
-  );
-
-  output = output.replace(
-    /([.#]?[a-zA-Z_-][a-zA-Z0-9_-]*)(\s*\{)/g,
-    '<span class="token-tag">$1</span>$2',
-  );
-
-  output = output.replace(
-    /([a-zA-Z-]+)(\s*:)/g,
-    '<span class="token-property">$1</span>$2',
-  );
-
-  output = output.replace(
-    /(#(?:[a-fA-F0-9]{3,8})\b)/g,
-    '<span class="token-string">$1</span>',
-  );
-
-  output = output.replace(
-    /(\b\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|s|deg)?\b)/g,
-    '<span class="token-number">$1</span>',
-  );
-
-  return output;
-}
-
-function highlightJS(code) {
-  let output = escapeHTML(code);
-
-  output = output.replace(
-    /(\/\/.*$)/gm,
-    '<span class="token-comment">$1</span>',
-  );
-
-  output = output.replace(
-    /('.*?'|".*?"|`.*?`)/g,
-    '<span class="token-string">$1</span>',
-  );
-
-  output = output.replace(
-    /\b(const|let|var|function|return|if|else|for|while|new|class|true|false|null|undefined)\b/g,
-    '<span class="token-keyword">$1</span>',
-  );
-
-  output = output.replace(
-    /\b(\d+(?:\.\d+)?)\b/g,
-    '<span class="token-number">$1</span>',
-  );
-
-  output = output.replace(
-    /\b([a-zA-Z_$][\w$]*)(?=\()/g,
-    '<span class="token-function">$1</span>',
-  );
-
-  return output;
-}
-
-function highlightCode(code, type) {
-  if (!code) {
-    return "";
+(function () {
+  "use strict";
+
+  // ========== DOM refs ==========
+  const editorTextarea = document.getElementById("codeEditor");
+  const previewIframe = document.getElementById("proPreview");
+  const deviceFrame = document.getElementById("deviceFrame");
+  const codeTabs = document.querySelectorAll(".code-tab");
+  const deviceButtons = document.querySelectorAll(".device-button");
+  const editorHint = document.getElementById("editorHint");
+  const resetBtn = document.getElementById("resetCode");
+  const runBtn = document.getElementById("runButton");
+  const downloadBtn = document.getElementById("downloadPro");
+  const consoleOutput = document.getElementById("consoleOutput");
+  const clearConsoleBtn = document.getElementById("clearConsole");
+  const resetModal = document.getElementById("resetModal");
+  const cancelReset = document.getElementById("cancelReset");
+  const confirmReset = document.getElementById("confirmReset");
+
+  // ========== Default templates ==========
+  const defaultCode = {
+    html: `<!--\nIsi struktur website kamu di sini.\nKamu tidak perlu menulis <html>,\n<head>, atau <body>.\nMH.DEV akan mengurus bagian itu.\n\nContoh:\n-->\n\n<header class="hero">\n    <p class="eyebrow">website aku</p>\n    <h1>Halo 👋</h1>\n    <p>Ini website yang sedang aku buat.</p>\n    <a href="#tentang" class="button">Kenalan yuk</a>\n</header>\n\n<main>\n    <section id="tentang">\n        <h2>Sedikit tentang aku</h2>\n        <p>Aku sedang belajar membuat website dan mencoba hal-hal baru.</p>\n    </section>\n    <section>\n        <h2>Yang aku suka</h2>\n        <div class="cards">\n            <article><h3>Web</h3><p>Membuat website dari nol.</p></article>\n            <article><h3>Visual</h3><p>Bermain dengan tampilan.</p></article>\n            <article><h3>Eksperimen</h3><p>Mencoba ide random.</p></article>\n        </div>\n    </section>\n</main>\n\n<footer>© 2026 Website Aku</footer>`,
+    css: `* { box-sizing: border-box; }\nhtml { scroll-behavior: smooth; }\nbody {\n    margin: 0;\n    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;\n    background: #f5f5f7;\n    color: #1d1d1f;\n}\n.hero {\n    min-height: 85vh;\n    padding: 80px 24px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n}\n.eyebrow {\n    color: #777;\n    font-size: 13px;\n    text-transform: uppercase;\n    letter-spacing: .12em;\n}\nh1 {\n    margin: 20px 0 0;\n    font-size: clamp(50px, 9vw, 110px);\n    line-height: .9;\n    letter-spacing: -.07em;\n}\n.hero > p {\n    max-width: 550px;\n    color: #666;\n    font-size: 18px;\n    line-height: 1.6;\n}\n.button {\n    margin-top: 20px;\n    padding: 13px 20px;\n    display: inline-block;\n    background: #1d1d1f;\n    color: #fff;\n    border-radius: 999px;\n    text-decoration: none;\n}\nsection {\n    max-width: 1000px;\n    margin: auto;\n    padding: 100px 24px;\n}\nsection h2 {\n    font-size: 48px;\n    letter-spacing: -.05em;\n}\nsection p {\n    max-width: 650px;\n    color: #666;\n    line-height: 1.7;\n}\n.cards {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 16px;\n}\n.cards article {\n    padding: 28px;\n    background: #fff;\n    border-radius: 20px;\n}\n.cards article p { color: #666; }\nfooter {\n    padding: 50px 24px;\n    color: #777;\n    text-align: center;\n}\n@media (max-width: 700px) {\n    .cards { grid-template-columns: 1fr; }\n    section h2 { font-size: 40px; }\n}`,
+    js: `const button = document.querySelector(".button");\nbutton?.addEventListener("click", () => {\n    console.log("Tombol diklik!");\n});`,
+  };
+
+  // ========== State ==========
+  const codeState = {
+    html: "",
+    css: "",
+    js: "",
+  };
+
+  let currentMode = "html";
+  let editor = null;
+  let previewTimer = null;
+
+  const hints = {
+    html: "Struktur halaman website kamu.",
+    css: "Tampilan, warna, ukuran, dan layout website.",
+    js: "Interaksi dan perilaku website kamu.",
+  };
+
+  // ========== Load from localStorage ==========
+  function loadFromStorage() {
+    const stored = {
+      html: localStorage.getItem("mhdev-pro-html"),
+      css: localStorage.getItem("mhdev-pro-css"),
+      js: localStorage.getItem("mhdev-pro-js"),
+    };
+    codeState.html = stored.html !== null ? stored.html : defaultCode.html;
+    codeState.css = stored.css !== null ? stored.css : defaultCode.css;
+    codeState.js = stored.js !== null ? stored.js : defaultCode.js;
   }
 
-  if (type === "html") {
-    return highlightHTML(code);
+  function saveToStorage() {
+    localStorage.setItem("mhdev-pro-html", codeState.html);
+    localStorage.setItem("mhdev-pro-css", codeState.css);
+    localStorage.setItem("mhdev-pro-js", codeState.js);
   }
 
-  if (type === "css") {
-    return highlightCSS(code);
-  }
-
-  return highlightJS(code);
-}
-
-/* LINE NUMBERS */
-
-function updateLineNumbers() {
-  const count = codeEditor.value.split("\n").length;
-
-  const numbers = [];
-
-  for (let i = 1; i <= count; i++) {
-    numbers.push(i);
-  }
-
-  lineNumbers.textContent = numbers.join("\n");
-}
-
-/* HIGHLIGHT */
-
-function updateHighlight() {
-  highlightLayer.innerHTML =
-    highlightCode(codeEditor.value, currentCode) + "\n";
-}
-
-/* LOAD */
-
-function loadCode(type) {
-  currentCode = type;
-
-  codeEditor.value = codeState[type];
-
-  editorHint.textContent = hints[type];
-
-  updateLineNumbers();
-  updateHighlight();
-
-  codeEditor.scrollTop = 0;
-  highlightLayer.scrollTop = 0;
-
-  updatePreview();
-}
-
-/* SAVE */
-
-function saveCurrentCode() {
-  codeState[currentCode] = codeEditor.value;
-}
-
-/* EDITOR INPUT */
-
-codeEditor.addEventListener("input", () => {
-  saveCurrentCode();
-
-  updateLineNumbers();
-  updateHighlight();
-
-  updatePreview();
-});
-
-/* SCROLL */
-
-codeEditor.addEventListener("scroll", () => {
-  lineNumbers.scrollTop = codeEditor.scrollTop;
-
-  highlightLayer.scrollTop = codeEditor.scrollTop;
-
-  highlightLayer.scrollLeft = codeEditor.scrollLeft;
-});
-
-/* TABS */
-
-codeTabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    saveCurrentCode();
-
-    codeTabs.forEach((item) => {
-      item.classList.remove("active");
+  // ========== Initialize CodeMirror ==========
+  function initEditor() {
+    editor = CodeMirror.fromTextArea(editorTextarea, {
+      mode: "xml",
+      theme: "mhdev",
+      lineNumbers: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: false,
+      lineWrapping: false,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      extraKeys: {
+        "Ctrl-Enter": runPreview,
+        "Cmd-Enter": runPreview,
+        "Ctrl-S": function (cm) {
+          saveCurrentCode();
+          saveToStorage();
+          editorHint.textContent = "✓ Disimpan ke lokal";
+          setTimeout(() => {
+            editorHint.textContent = hints[currentMode];
+          }, 1500);
+        },
+        "Cmd-S": function (cm) {
+          saveCurrentCode();
+          saveToStorage();
+          editorHint.textContent = "✓ Disimpan ke lokal";
+          setTimeout(() => {
+            editorHint.textContent = hints[currentMode];
+          }, 1500);
+        },
+      },
     });
 
-    tab.classList.add("active");
-
-    loadCode(tab.dataset.code);
-  });
-});
-
-/* TAB INDENT */
-
-codeEditor.addEventListener("keydown", (event) => {
-  if (event.key !== "Tab") {
-    return;
+    loadCode("html");
   }
 
-  event.preventDefault();
-
-  const start = codeEditor.selectionStart;
-
-  const end = codeEditor.selectionEnd;
-
-  const selected = codeEditor.value.substring(start, end);
-
-  if (selected.includes("\n")) {
-    const indented = selected
-      .split("\n")
-      .map((line) => "    " + line)
-      .join("\n");
-
-    codeEditor.value =
-      codeEditor.value.substring(0, start) +
-      indented +
-      codeEditor.value.substring(end);
-
-    codeEditor.selectionStart = start;
-
-    codeEditor.selectionEnd = start + indented.length;
-  } else {
-    codeEditor.value =
-      codeEditor.value.substring(0, start) +
-      "    " +
-      codeEditor.value.substring(end);
-
-    codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
+  // ========== Code management ==========
+  function saveCurrentCode() {
+    if (!editor) return;
+    const value = editor.getValue();
+    codeState[currentMode] = value;
+    clearTimeout(window._saveTimer);
+    window._saveTimer = setTimeout(() => {
+      saveToStorage();
+    }, 500);
   }
 
-  saveCurrentCode();
+  function loadCode(mode) {
+    currentMode = mode;
+    if (!editor) return;
+    editor.setValue(codeState[mode]);
+    editor.setOption(
+      "mode",
+      mode === "html" ? "xml" : mode === "css" ? "css" : "javascript",
+    );
+    editorHint.textContent = hints[mode];
+    setTimeout(() => editor.refresh(), 10);
+    runPreview();
+  }
 
-  updateLineNumbers();
-  updateHighlight();
+  // ========== Build preview document ==========
+  function cleanHTML(html) {
+    return html
+      .replace(/<!doctype[\s\S]*?>/gi, "")
+      .replace(/<html[^>]*>/gi, "")
+      .replace(/<\/html>/gi, "")
+      .replace(/<head[\s\S]*?<\/head>/gi, "")
+      .replace(/<body[^>]*>/gi, "")
+      .replace(/<\/body>/gi, "")
+      .trim();
+  }
 
-  updatePreview();
-});
+  function buildPreviewDocument() {
+    const html = cleanHTML(codeState.html);
+    const css = codeState.css;
+    const js = codeState.js;
 
-/* BUILD PREVIEW */
-
-function cleanHTML(html) {
-  return html
-    .replace(/<!doctype[\s\S]*?>/gi, "")
-    .replace(/<html[^>]*>/gi, "")
-    .replace(/<\/html>/gi, "")
-    .replace(/<head[\s\S]*?<\/head>/gi, "")
-    .replace(/<body[^>]*>/gi, "")
-    .replace(/<\/body>/gi, "")
-    .trim();
-}
-
-function buildPreviewDocument() {
-  const html = cleanHTML(codeState.html);
-
-  const css = codeState.css;
-
-  const js = codeState.js;
-
-  return `<!DOCTYPE html>
-
+    return `<!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <base href="about:blank">
-
-<style>
-
-${css}
-
-</style>
-
+<style>${css}</style>
 </head>
-
 <body>
-
 ${html}
 
-
 <script>
+(function() {
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    const originalInfo = console.info;
 
-(() => {
-
-    const originalOpen =
-        window.open;
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            const link =
-                event.target.closest("a");
-
-            if (!link) {
-                return;
+    function send(type, args) {
+        const message = args.map(arg => {
+            try {
+                return String(arg);
+            } catch(e) {
+                return '[unable to stringify]';
             }
-
-            const href =
-                link.getAttribute("href");
-
-            if (!href) {
-                return;
-            }
-
-            if (
-                href.startsWith("#") ||
-                href.startsWith("mailto:") ||
-                href.startsWith("tel:")
-            ) {
-                return;
-            }
-
-            if (
-                href.startsWith("http://") ||
-                href.startsWith("https://")
-            ) {
-
-                event.preventDefault();
-
-                originalOpen(
-                    href,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-
-                return;
-            }
-
-            event.preventDefault();
-
-        },
-        true
-    );
-
-    try {
-
-        ${js}
-
-    } catch (error) {
-
-        console.error(
-            "MH.DEV Preview:",
-            error
-        );
-
+        }).join(' ');
+        window.parent.postMessage({ type: 'console', method: type, content: message }, '*');
     }
 
-})();
+    console.log = function(...args) { send('log', args); originalLog.apply(console, args); };
+    console.error = function(...args) { send('error', args); originalError.apply(console, args); };
+    console.warn = function(...args) { send('warn', args); originalWarn.apply(console, args); };
+    console.info = function(...args) { send('info', args); originalInfo.apply(console, args); };
 
-<\/script>
-
-</body>
-
-</html>`;
-}
-
-/* UPDATE PREVIEW */
-
-let previewTimer = null;
-
-function updatePreview() {
-  clearTimeout(previewTimer);
-
-  previewTimer = setTimeout(() => {
-    proPreview.srcdoc = buildPreviewDocument();
-  }, 80);
-}
-
-/* DEVICE */
-
-deviceButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const device = button.dataset.device;
-
-    deviceButtons.forEach((item) => {
-      item.classList.remove("active");
+    window.addEventListener('error', function(event) {
+        const msg = event.message + ' at ' + event.filename + ':' + event.lineno + ':' + event.colno;
+        console.error(msg);
+        send('error', [msg]);
+        return false;
     });
 
-    button.classList.add("active");
+    window.addEventListener('unhandledrejection', function(event) {
+        const msg = 'Unhandled Promise rejection: ' + event.reason;
+        console.error(msg);
+        send('error', [msg]);
+        return false;
+    });
 
-    deviceFrame.className = `device-frame ${device}`;
-  });
-});
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href) return;
+        if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (href.startsWith('http://') || href.startsWith('https://')) {
+            e.preventDefault();
+            window.open(href, '_blank', 'noopener,noreferrer');
+            return;
+        }
+        e.preventDefault();
+    }, true);
 
-/* RESET */
-
-document.getElementById("resetCode").addEventListener("click", () => {
-  const confirmed = window.confirm("Reset semua kode ke contoh awal?");
-
-  if (!confirmed) {
-    return;
+    try {
+        ${js}
+    } catch (error) {
+        console.error('Preview Error:', error.message);
+    }
+})();
+<\/script>
+</body>
+</html>`;
   }
 
-  codeState.html = defaultCode.html;
+  // ========== Run preview ==========
+  function runPreview() {
+    saveCurrentCode();
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => {
+      const doc = buildPreviewDocument();
+      previewIframe.srcdoc = doc;
+    }, 80);
+  }
 
-  codeState.css = defaultCode.css;
+  // ========== Console messages from iframe ==========
+  function handleConsoleMessage(event) {
+    if (event.source !== previewIframe.contentWindow) return;
+    const data = event.data;
+    if (!data || data.type !== "console") return;
+    const method = data.method || "log";
+    const content = data.content || "";
+    const cls = "console-" + method;
+    const line = document.createElement("div");
+    line.className = "console-line " + cls;
+    line.textContent = "▸ " + content;
+    consoleOutput.appendChild(line);
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    while (consoleOutput.children.length > 100) {
+      consoleOutput.removeChild(consoleOutput.firstChild);
+    }
+  }
 
-  codeState.js = defaultCode.js;
+  window.addEventListener("message", handleConsoleMessage);
 
-  loadCode("html");
-});
-
-/* DOWNLOAD */
-
-document.getElementById("downloadPro").addEventListener("click", () => {
-  saveCurrentCode();
-
-  const html = buildDownloadDocument();
-
-  downloadFile("website-aku.html", html);
-});
-
-function buildDownloadDocument() {
-  return `<!DOCTYPE html>
-
-<html lang="id">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Website Aku</title>
-
-<style>
-
-${codeState.css}
-
-</style>
-
-</head>
-
-<body>
-
-${cleanHTML(codeState.html)}
-
-
-<script>
-
-${codeState.js}
-
-<\/script>
-
-</body>
-
-</html>`;
-}
-
-function downloadFile(filename, content) {
-  const blob = new Blob([content], {
-    type: "text/html;charset=utf-8",
+  clearConsoleBtn.addEventListener("click", function () {
+    consoleOutput.innerHTML =
+      '<div class="console-line console-info">▸ Console cleared</div>';
   });
 
-  const url = URL.createObjectURL(blob);
+  // ========== Tabs ==========
+  codeTabs.forEach((tab) => {
+    tab.addEventListener("click", function () {
+      const mode = this.dataset.code;
+      if (mode === currentMode) return;
+      saveCurrentCode();
+      codeTabs.forEach((t) => t.classList.remove("active"));
+      this.classList.add("active");
+      loadCode(mode);
+    });
+  });
 
-  const link = document.createElement("a");
+  // ========== Device switcher ==========
+  deviceButtons.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const device = this.dataset.device;
+      deviceButtons.forEach((b) => b.classList.remove("active"));
+      this.classList.add("active");
+      deviceFrame.className = "device-frame " + device;
+    });
+  });
 
-  link.href = url;
-  link.download = filename;
+  // ========== Reset modal ==========
+  function showResetModal() {
+    resetModal.style.display = "flex";
+  }
+  function hideResetModal() {
+    resetModal.style.display = "none";
+  }
 
-  document.body.appendChild(link);
+  resetBtn.addEventListener("click", showResetModal);
+  cancelReset.addEventListener("click", hideResetModal);
+  confirmReset.addEventListener("click", function () {
+    codeState.html = defaultCode.html;
+    codeState.css = defaultCode.css;
+    codeState.js = defaultCode.js;
+    saveToStorage();
+    loadCode(currentMode);
+    hideResetModal();
+    consoleOutput.innerHTML =
+      '<div class="console-line console-info">▸ Editor reset to template</div>';
+  });
+  resetModal.addEventListener("click", function (e) {
+    if (e.target === this) hideResetModal();
+  });
 
-  link.click();
+  // ========== Download ==========
+  function buildDownloadDocument() {
+    return `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Aku</title>
+<style>${codeState.css}</style>
+</head>
+<body>
+${cleanHTML(codeState.html)}
+<script>
+${codeState.js}
+<\/script>
+</body>
+</html>`;
+  }
 
-  link.remove();
+  downloadBtn.addEventListener("click", function () {
+    saveCurrentCode();
+    const content = buildDownloadDocument();
+    downloadFile("website-aku.html", content);
+  });
 
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 500);
-}
+  function downloadFile(filename, content) {
+    const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  }
 
-/* INITIAL */
+  // ========== Run button ==========
+  runBtn.addEventListener("click", runPreview);
 
-loadCode("html");
+  // ========== Init ==========
+  loadFromStorage();
+  initEditor();
+  setTimeout(runPreview, 200);
+
+  window.addEventListener("resize", function () {
+    if (editor) {
+      clearTimeout(window._resizeTimer);
+      window._resizeTimer = setTimeout(() => editor.refresh(), 100);
+    }
+  });
+})();
