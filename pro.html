@@ -1,293 +1,139 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="description"
-        content="MH.DEV Code Playground."
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MH.DEV Code Playground - Pro Mode">
     <title>MH.DEV Code Playground</title>
 
+    <!-- CodeMirror CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
     <link rel="stylesheet" href="pro.css">
-
 </head>
-
 <body>
 
 <div class="pro-app">
 
+    <!-- HEADER -->
     <header class="pro-header">
-
         <div class="pro-brand">
-
-            <a
-                href="index.html"
-                class="back-button"
-                aria-label="Kembali ke Easy Mode"
-            >
-                ←
-            </a>
-
+            <a href="index.html" class="back-button" aria-label="Kembali ke Beranda">←</a>
             <div class="brand-text">
-
                 <strong>MH.DEV</strong>
-
-                <span>
-                    code playground
-                </span>
-
+                <span>code playground</span>
             </div>
-
         </div>
-
 
         <div class="pro-center">
-
             <span class="pro-status-dot"></span>
-
-            <span>
-                Mode Pro
-            </span>
-
+            <span>Mode Pro</span>
         </div>
-
 
         <div class="pro-actions">
-
-            <button
-                id="resetCode"
-                class="action-button secondary"
-                type="button"
-            >
-                Reset kode
-            </button>
-
-            <button
-                id="downloadPro"
-                class="action-button primary"
-                type="button"
-            >
-                ↓ Download HTML
-            </button>
-
+            <button id="resetCode" class="action-button secondary" type="button">Reset kode</button>
+            <button id="runButton" class="action-button primary" type="button">▶ Run</button>
+            <button id="downloadPro" class="action-button primary" type="button">↓ Download HTML</button>
         </div>
-
     </header>
 
-
+    <!-- WORKSPACE -->
     <main class="pro-workspace">
-
+        <!-- EDITOR PANEL -->
         <section class="editor-panel">
-
             <header class="editor-header">
-
                 <div class="window-controls">
-
                     <span class="traffic red"></span>
                     <span class="traffic yellow"></span>
                     <span class="traffic green"></span>
-
                 </div>
-
-
-                <span class="editor-label">
-                    editor
-                </span>
-
+                <span class="editor-label">editor</span>
             </header>
-
 
             <nav class="code-tabs">
-
-                <button
-                    class="code-tab active"
-                    data-code="html"
-                    type="button"
-                >
-                    HTML
-                </button>
-
-                <button
-                    class="code-tab"
-                    data-code="css"
-                    type="button"
-                >
-                    CSS
-                </button>
-
-                <button
-                    class="code-tab"
-                    data-code="js"
-                    type="button"
-                >
-                    JavaScript
-                </button>
-
+                <button class="code-tab active" data-code="html" type="button">HTML</button>
+                <button class="code-tab" data-code="css" type="button">CSS</button>
+                <button class="code-tab" data-code="js" type="button">JavaScript</button>
             </nav>
 
-
             <div class="editor-info">
-
-                <span id="editorHint">
-                    Struktur halaman website kamu.
-                </span>
-
-                <span>
-                    Tab untuk indent
-                </span>
-
+                <span id="editorHint">Struktur halaman website kamu.</span>
+                <span>Ctrl+Enter untuk Run</span>
             </div>
 
-
+            <!-- CodeMirror akan menggantikan textarea ini -->
             <div class="code-editor-wrap">
-
-                <div
-                    class="line-numbers"
-                    id="lineNumbers"
-                >
-                    1
-                </div>
-
-
-                <div class="code-content">
-
-                    <pre
-                        class="highlight-layer"
-                        id="highlightLayer"
-                        aria-hidden="true"
-                    ></pre>
-
-
-                    <textarea
-                        id="codeEditor"
-                        class="code-editor"
-                        spellcheck="false"
-                        autocapitalize="off"
-                        autocomplete="off"
-                        autocorrect="off"
-                        aria-label="Code editor"
-                    ></textarea>
-
-                </div>
-
+                <textarea id="codeEditor" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Code editor"></textarea>
             </div>
-
         </section>
 
-
+        <!-- PREVIEW PANEL -->
         <section class="preview-panel">
-
             <header class="preview-header">
-
                 <div class="preview-name">
-
                     <span class="status-dot"></span>
-
-                    <strong>
-                        Preview
-                    </strong>
-
+                    <strong>Preview</strong>
                 </div>
-
-
                 <div class="device-switcher">
-
-                    <button
-                        class="device-button active"
-                        data-device="desktop"
-                        type="button"
-                    >
-                        <span>▣</span>
-                        <b>Desktop</b>
-                    </button>
-
-
-                    <button
-                        class="device-button"
-                        data-device="tablet"
-                        type="button"
-                    >
-                        <span>▯</span>
-                        <b>Tablet</b>
-                    </button>
-
-
-                    <button
-                        class="device-button"
-                        data-device="mobile"
-                        type="button"
-                    >
-                        <span>▯</span>
-                        <b>Mobile</b>
-                    </button>
-
+                    <button class="device-button active" data-device="desktop" type="button"><span>▣</span><b>Desktop</b></button>
+                    <button class="device-button" data-device="tablet" type="button"><span>▯</span><b>Tablet</b></button>
+                    <button class="device-button" data-device="mobile" type="button"><span>▯</span><b>Mobile</b></button>
                 </div>
-
             </header>
 
-
-            <div
-                class="preview-stage"
-                id="previewStage"
-            >
-
-                <div
-                    class="device-frame desktop"
-                    id="deviceFrame"
-                >
-
+            <div class="preview-stage" id="previewStage">
+                <div class="device-frame desktop" id="deviceFrame">
                     <div class="browser-bar">
-
                         <span></span>
-
-                        <div class="browser-address">
-                            localhost / preview
-                        </div>
-
+                        <div class="browser-address">localhost / preview</div>
                         <span></span>
-
                     </div>
-
-
-                    <iframe
-                        id="proPreview"
-                        title="Website preview"
-                        sandbox="allow-scripts allow-forms"
-                    ></iframe>
-
+                    <iframe id="proPreview" title="Website preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
                 </div>
-
             </div>
 
+            <!-- CONSOLE PANEL -->
+            <div class="console-panel" id="consolePanel">
+                <div class="console-header">
+                    <span>Console</span>
+                    <button id="clearConsole" class="console-clear">Clear</button>
+                </div>
+                <div class="console-output" id="consoleOutput">
+                    <div class="console-line console-info">▸ MH.DEV Console ready</div>
+                </div>
+            </div>
         </section>
-
     </main>
 
-
+    <!-- FOOTER -->
     <footer class="pro-footer">
-
-        <span>
-            HTML + CSS + JavaScript
-        </span>
-
-        <span>
-            Perubahan langsung terlihat di preview
-        </span>
-
+        <span>HTML + CSS + JavaScript</span>
+        <span>Perubahan langsung terlihat di preview</span>
     </footer>
 
 </div>
 
+<!-- MODAL RESET -->
+<div class="modal-overlay" id="resetModal" style="display:none;">
+    <div class="modal-box">
+        <h3>Reset editor?</h3>
+        <p>Kode yang kamu tulis akan dikembalikan ke template awal.</p>
+        <div class="modal-actions">
+            <button class="modal-btn secondary" id="cancelReset">Batal</button>
+            <button class="modal-btn primary" id="confirmReset">Reset</button>
+        </div>
+    </div>
+</div>
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
 
 <script src="pro.js"></script>
-
 </body>
 </html>
